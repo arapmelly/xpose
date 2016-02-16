@@ -101,44 +101,54 @@ class PayrollController extends \BaseController {
 	
 	    $allws = DB::table('employee_allowances')
             ->join('allowances', 'employee_allowances.allowance_id', '=', 'allowances.id')
-            ->join('employee', 'employee_allowances.employee_id', '=', 'employee.id')
-            ->join('transact', 'employee.personal_file_number', '=', 'transact.employee_id')
-            ->select('employee.id','allowance_name','allowance_id','allowance_amount','financial_month_year')
+            ->select('employee_allowances.employee_id','allowance_name','allowance_id','allowance_amount')
             ->get();
 
 	    foreach($allws as $allw){
         DB::table('transact_allowances')->insert(
-        ['employee_id' => $allw->id, 
+        ['employee_id' => $allw->employee_id, 
         'allowance_name' => $allw->allowance_name,
         'allowance_id' => $allw->allowance_id,
         'allowance_amount' => $allw->allowance_amount,
-        'financial_month_year'=>$allw->financial_month_year,
+        'financial_month_year'=>Input::get('period'),
+        ]
+        );
+        }
+
+        $rels = DB::table('employee_relief')
+            ->join('relief', 'employee_relief.relief_id', '=', 'relief.id')
+            ->select('employee_relief.employee_id','relief_name','relief_id','relief_amount')
+            ->get();
+
+	    foreach($rels as $rel){
+        DB::table('transact_reliefs')->insert(
+        ['employee_id' => $rel->employee_id, 
+        'relief_name' => $rel->relief_name,
+        'relief_id' => $rel->relief_id,
+        'relief_amount' => $rel->relief_amount,
+        'financial_month_year'=>Input::get('period'),
         ]
         );
         }
 
         $deds = DB::table('employee_deductions')
             ->join('deductions', 'employee_deductions.deduction_id', '=', 'deductions.id')
-            ->join('employee', 'employee_deductions.employee_id', '=', 'employee.id')
-            ->join('transact', 'employee.personal_file_number', '=', 'transact.employee_id')
-            ->select('employee.id','deduction_name','deduction_id','deduction_amount','financial_month_year')
+            ->select('employee_deductions.employee_id','deduction_name','deduction_id','deduction_amount')
             ->get();
 
 	    foreach($deds as $ded){
         DB::table('transact_deductions')->insert(
-        ['employee_id' => $ded->id, 
+        ['employee_id' => $ded->employee_id, 
         'deduction_name' => $ded->deduction_name,
         'deduction_id' => $ded->deduction_id,
         'deduction_amount' => $ded->deduction_amount,
-        'financial_month_year'=>$ded->financial_month_year,
+        'financial_month_year'=>Input::get('period'),
         ]
         );
         }
 
         $earns = DB::table('earnings')
-            ->join('employee', 'earnings.employee_id', '=', 'employee.id')
-            ->join('transact', 'employee.personal_file_number', '=', 'transact.employee_id')
-            ->select('earnings.employee_id','earnings_name','financial_month_year','earnings_amount')
+            ->select('earnings.employee_id','earnings_name','earnings_amount')
             ->get();
 
 	    foreach($earns as $earn){
@@ -146,7 +156,22 @@ class PayrollController extends \BaseController {
         ['employee_id' => $earn->employee_id, 
         'earning_name' => $earn->earnings_name,
         'earning_amount' => $earn->earnings_amount,
-        'financial_month_year'=>$earn->financial_month_year,
+        'financial_month_year'=>Input::get('period'),
+        ]
+        );
+        }
+
+        $otimes = DB::table('overtimes')
+            ->select('overtimes.employee_id','type','rate','amount')
+            ->get();
+
+	    foreach($otimes as $otime){
+        DB::table('transact_overtimes')->insert(
+        ['employee_id' => $otime->employee_id, 
+        'overtime_type' => $otime->type,
+        'overtime_rate' => $otime->rate,
+        'overtime_amount' => $otime->amount,
+        'financial_month_year'=>Input::get('period'),
         ]
         );
         }

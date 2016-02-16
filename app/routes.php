@@ -173,7 +173,23 @@ Route::post('currencies/update/{id}', 'CurrenciesController@update');
 Route::get('currencies/delete/{id}', 'CurrenciesController@destroy');
 Route::get('currencies/create', 'CurrenciesController@create');
 
+/*
+*overtimes
+*/
 
+Route::resource('overtimes', 'OvertimesController');
+Route::get('overtimes/edit/{id}', 'OvertimesController@edit');
+Route::post('overtimes/update/{id}', 'OvertimesController@update');
+Route::get('overtimes/delete/{id}', 'OvertimesController@destroy');
+
+/*
+* employee documents routes
+*/
+
+Route::resource('documents', 'DocumentsController');
+Route::post('documents/update/{id}', 'DocumentsController@update');
+Route::get('documents/delete/{id}', 'DocumentsController@destroy');
+Route::get('documents/edit/{id}', 'DocumentsController@edit');
 
 /*
 * branches routes
