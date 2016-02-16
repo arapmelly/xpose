@@ -84,6 +84,20 @@ public static $rules = [
     return $earn;
 
     }
+
+    public static function overtimes($id){
+    $earn = 0.00;
+    
+    $total_overtimes = DB::table('overtimes')
+                     ->select(DB::raw('COALESCE(sum(amount),0.00) as overtimes'))
+                     ->where('employee_id', '=', $id)
+                     ->get();
+    foreach($total_overtimes as $total_overtime){
+    $otime = $total_overtime->overtimes;
+    }
+    return $otime;
+
+    }
     
     public static function salary_pay($id){
     $salary = 0.00;
@@ -102,7 +116,7 @@ public static $rules = [
     public static function total_benefits($id){
     $total_earnings = 0.00;
     
-    $total_earnings = static::allowances($id)+static::earnings($id)+static::reliefs($id);
+    $total_earnings = static::allowances($id)+static::earnings($id)+static::overtimes($id);
 
     return $total_earnings;
 
@@ -158,7 +172,7 @@ public static $rules = [
      $paye = 0.00;
     }
     }
-    return round($paye,2);
+    return round($paye-static::reliefs($id),2);
    }
 
     public static function nssf($id){

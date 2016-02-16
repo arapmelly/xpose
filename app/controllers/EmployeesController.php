@@ -61,17 +61,17 @@ class EmployeesController extends \BaseController {
 
             $file = Input::file('image');
             $name = time().'-'.$file->getClientOriginalName();
-            $file = $file->move('public/uploads/passport/', $name);
-            $input['file'] = '/public/uploads/passport/'.$name;
+            $file = $file->move('public/uploads/employees/photo', $name);
+            $input['file'] = '/public/uploads/employees/photo'.$name;
             $employee->photo = $name;
         }
 
         if ( Input::hasFile('signature')) {
 
-            $file = Input::file('image');
+            $file = Input::file('signature');
             $name = time().'-'.$file->getClientOriginalName();
-            $file = $file->move('public/uploads/signature/', $name);
-            $input['file'] = '/public/uploads/signature/'.$name;
+            $file = $file->move('public/uploads/employees/signature/', $name);
+            $input['file'] = '/public/uploads/employees/signature/'.$name;
             $employee->signature = $name;
         }
 
@@ -177,7 +177,7 @@ class EmployeesController extends \BaseController {
 
 		 Audit::logaudit('Employee', 'create', 'created: '.$employee->personal_file_number.'-'.$employee->first_name.' '.$employee->last_name);
 
-		return Redirect::route('employees.index');
+		return Redirect::route('employees.index')->withFlashMessage('Employee successfully created!');
 		 }
     catch (FormValidationException $e)
     {
@@ -236,6 +236,24 @@ class EmployeesController extends \BaseController {
 		{
 			return Redirect::back()->withErrors($validator)->withInput();
 		}
+
+        if ( Input::hasFile('image')) {
+
+            $file = Input::file('image');
+            $name = time().'-'.$file->getClientOriginalName();
+            $file = $file->move('public/uploads/employees/photo', $name);
+            $input['file'] = '/public/uploads/employees/photo'.$name;
+            $employee->photo = $name;
+        }
+
+        if ( Input::hasFile('signature')) {
+
+            $file = Input::file('signature');
+            $name = time().'-'.$file->getClientOriginalName();
+            $file = $file->move('public/uploads/employees/signature/', $name);
+            $input['file'] = '/public/uploads/employees/signature/'.$name;
+            $employee->signature = $name;
+        }
 
 		$employee->personal_file_number = Input::get('personal_file_number');
 		$employee->first_name = Input::get('fname');
@@ -335,19 +353,15 @@ class EmployeesController extends \BaseController {
 	    if(Input::get('active') != null ){
 		$employee->in_employment = 'Y';
 	    }else{
-	    $employee->in_employment = 'N';
+	    $employee->active = 'N';
 	    }
 
 		$employee->update();
 
 		 Audit::logaudit('Employee', 'update', 'updated: '.$employee->personal_file_number.'-'.$employee->first_name.' '.$employee->last_name);
 
-		 if(Confide::user()->user_type == 'member'){
-		 	return Redirect::to('dashboard');
-		 } else {
-		 	return Redirect::route('employees.index');
-		 }
-		
+
+		return Redirect::route('employees.index')->withFlashMessage('Employee successfully updated!');;
 	}
 
 	/**
@@ -366,7 +380,7 @@ class EmployeesController extends \BaseController {
 		 Audit::logaudit('Employee', 'delete', 'deleted: '.$employee->personal_file_number.'-'.$employee->first_name.' '.$employee->last_name);
 
 
-		return Redirect::route('employees.index');
+		return Redirect::route('employees.index')->withDeleteMessage('Employee successfully deleted!');;
 	}
 
 }

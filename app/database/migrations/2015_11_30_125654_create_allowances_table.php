@@ -20,7 +20,11 @@ class CreateAllowancesTable extends Migration {
 			$table->timestamps();
 		});
 
-		
+		DB::table('allowances')->insert(array(
+            array('allowance_name' => 'House Allowance','organization_id' => '1'),
+            array('allowance_name' => 'Medical Allowance','organization_id' => '1'),
+            array('allowance_name' => 'Transport Allowance','organization_id' => '1'),
+        ));
 	}
 
 

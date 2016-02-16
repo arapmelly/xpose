@@ -24,10 +24,12 @@ class Employee extends Eloquent {
 	public static $rules = [
 		 'fname' => 'required',
 		 'lname' => 'required',
+		 'department_id' => 'required',
+		 'branch_id' => 'required',
 		 'personal_file_number' => 'required|unique:employee',
 		 'identity_number' => 'required|unique:employee',
 		 'pay' => 'regex:/^\d+(\.\d{2})?$/',
-		 'email_office' => 'email|unique:employee',
+		 'email_office' => 'required|email|unique:employee',
 		 'email_personal' => 'email|unique:employee',
 		 'passport_number' => 'unique:employee',
 		 'work_permit_number' => 'unique:employee',
@@ -46,10 +48,12 @@ class Employee extends Eloquent {
         return array(
          'fname' => 'required',
 		 'lname' => 'required',
+		 'department_id' => 'required',
+		 'branch_id' => 'required',
 		 'personal_file_number' => 'required|unique:employee,personal_file_number,' . $id,
 		 'identity_number' => 'required|unique:employee,identity_number,' . $id,
 		 'pay' => 'regex:/^\d+(\.\d{2})?$/',
-		 'email_office' => 'email|unique:employee,email_office,' . $id,
+		 'email_office' => 'required|email|unique:employee,email_office,' . $id,
 		 'email_personal' => 'email|unique:employee,email_personal,' . $id,
 		 'passport_number' => 'unique:employee,passport_number,' . $id,
 		 'work_permit_number' => 'unique:employee,work_permit_number,' . $id,
@@ -68,9 +72,12 @@ class Employee extends Eloquent {
         'personal_file_number.unique'=>'That personal file number already exists!',
         'fname.required'=>'Please insert employee`s first name!',
         'lname.required'=>'Please insert employee`s last name!',
+        'department_id.required'=>'Please select employee`s department!',
+        'branch_id.required'=>'Please select employee`s branch!',
         'identity_number.required'=>'Please insert employee`s identity number!',
         'identity_number.unique'=>'That identity number already exists!',
         'pay.regex'=>'Please insert a valid salary!',
+        'email_office.required'=>'Please insert employee`s office email!',
         'email_office.unique'=>'That employee`s office email already exists!',
         'email_personal.unique'=>'That employee personal email already exists!',
         'passport_number.unique'=>'That passport number already exists!',
@@ -103,6 +110,15 @@ class Employee extends Eloquent {
 		return $this->belongsTo('JGroup');
 	}
 
+    public function overtime(){
+
+		return $this->hasMany('Overtime');
+	}
+
+	public function document(){
+
+		return $this->hasMany('Document');
+	}
 
 	public function allowances(){
 		return $this->belongsTo('EAllowances');
