@@ -135,6 +135,21 @@ class Employee extends Eloquent {
 		return $this->hasMany('Leaveapplication');
 	}
 
+    public function appraisal(){
+
+		return $this->hasMany('Appraisal');
+	}
+
+	public function Nextofkin(){
+
+		return $this->hasMany('Nextofkin');
+	}
+
+	public function property(){
+
+		return $this->hasMany('Property');
+	}
+
     public function occurences(){
 
 		return $this->hasMany('Occurence');
