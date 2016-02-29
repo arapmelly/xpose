@@ -144,4 +144,12 @@ class DocumentsController extends \BaseController {
 		return Redirect::route('documents.index')->withDeleteMessage('Employee Document successfully deleted!');
 	}
 
+    public function getDownload($id){
+        //PDF file is stored under project/public/download/info.pdf
+        $document = Document::findOrFail($id);
+        $file= public_path(). "/uploads/employees/documents/".$document->document_path;
+        
+        return Response::download($file, $document->document_name);
+}
+
 }
